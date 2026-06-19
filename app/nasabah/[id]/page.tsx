@@ -114,7 +114,15 @@ export default function NasabahDetailPage() {
   async function handleChangeStatus() {
     if (!newStatus || !nasabah) return
     setChangingStatus(true)
-    await supabase.from('kpr_nasabah').update({ status: newStatus }).eq('id', id)
+    const today = new Date().toISOString().split('T')[0]
+    const autoDate: Partial<KprNasabah> = {
+      status: newStatus,
+      ...(newStatus === 'pengajuan_bank' && !nasabah.tanggal_pengajuan_bank ? { tanggal_pengajuan_bank: today } : {}),
+      ...(newStatus === 'approval' && !nasabah.tanggal_approval ? { tanggal_approval: today } : {}),
+      ...(newStatus === 'akad' && !nasabah.tanggal_akad ? { tanggal_akad: today } : {}),
+      ...(newStatus === 'ditolak' && !nasabah.tanggal_ditolak ? { tanggal_ditolak: today } : {}),
+    }
+    await supabase.from('kpr_nasabah').update(autoDate).eq('id', id)
     await supabase.from('kpr_status_log').insert({
       nasabah_id: id, status_lama: nasabah.status, status_baru: newStatus,
       catatan: statusNote, nama_user: userEmail,
