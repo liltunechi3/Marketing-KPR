@@ -18,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const pathname = usePathname()
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [checking, setChecking] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -58,12 +59,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
         {/* Sidebar */}
         <aside style={{
-          width: 220,
+          width: sidebarOpen ? 220 : 0,
           background: '#111827',
           display: 'flex',
           flexDirection: 'column',
           flexShrink: 0,
           borderRight: '1px solid #1F2937',
+          overflow: 'hidden',
+          transition: 'width 0.25s ease',
         }}>
           {/* Logo */}
           <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid #1F2937', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -123,7 +126,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </aside>
 
         {/* Main */}
-        <main style={{ flex: 1, overflow: 'auto', background: '#F9FAFB' }}>
+        <main style={{ flex: 1, overflow: 'auto', background: '#F9FAFB', position: 'relative' }}>
+          {/* Toggle button */}
+          <button
+            onClick={() => setSidebarOpen(o => !o)}
+            style={{
+              position: 'fixed',
+              left: sidebarOpen ? 220 : 0,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 100,
+              width: 18,
+              height: 48,
+              background: '#1E40AF',
+              border: 'none',
+              borderRadius: sidebarOpen ? '0 6px 6px 0' : '0 6px 6px 0',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#FFFFFF',
+              fontSize: 10,
+              transition: 'left 0.25s ease',
+              padding: 0,
+            }}
+            title={sidebarOpen ? 'Sembunyikan menu' : 'Tampilkan menu'}
+          >
+            {sidebarOpen ? '‹' : '›'}
+          </button>
           {children}
         </main>
       </body>
