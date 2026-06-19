@@ -27,14 +27,14 @@ export default function LoginPage() {
 
   return (
     <div style={{
-      minHeight: '100vh', background: '#F9FAFB',
+      minHeight: '100vh', background: '#0F172A',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       <div style={{ width: '100%', maxWidth: 380 }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Image src="/Logo SHAISTANAYA-01.png" alt="Shaistanaya City" width={160} height={130} style={{ objectFit: 'contain', margin: '0 auto 8px' }} priority />
-          <p style={{ color: '#6B7280', fontSize: 13, marginTop: 4 }}>Masuk ke sistem CRM</p>
+          <p style={{ color: '#94A3B8', fontSize: 13, marginTop: 4 }}>Masuk ke sistem CRM</p>
         </div>
 
         {/* Card */}
@@ -95,7 +95,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p style={{ textAlign: 'center', fontSize: 12, color: '#9CA3AF', marginTop: 20 }}>
+        <p style={{ textAlign: 'center', fontSize: 12, color: '#475569', marginTop: 20 }}>
           Butuh akses? Hubungi administrator.
         </p>
       </div>
