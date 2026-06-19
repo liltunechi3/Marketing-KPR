@@ -1,50 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 420" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 200" fill="none">
   <defs>
-    <linearGradient id="gold" x1="160" y1="20" x2="240" y2="230" gradientUnits="userSpaceOnUse">
+    <linearGradient id="g1" x1="95" y1="10" x2="130" y2="140" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#F5E27A"/>
-      <stop offset="30%" stop-color="#D4A017"/>
-      <stop offset="60%" stop-color="#C8860A"/>
-      <stop offset="80%" stop-color="#E8C040"/>
-      <stop offset="100%" stop-color="#A0720A"/>
+      <stop offset="35%" stop-color="#D4A017"/>
+      <stop offset="65%" stop-color="#B8860B"/>
+      <stop offset="100%" stop-color="#E8C040"/>
     </linearGradient>
   </defs>
-  <!-- Flame / S shape -->
-  <path d="
-    M200 25
-    C200 25, 245 55, 248 100
-    C252 145, 228 158, 222 175
-    C216 192, 225 210, 240 218
-    C255 226, 268 220, 272 205
-    C276 190, 265 175, 250 170
-    C235 165, 228 155, 232 138
-    C238 115, 258 98, 255 65
-    C252 38, 230 18, 200 25Z
-  " fill="url(#gold)"/>
-  <path d="
-    M200 25
-    C178 40, 162 70, 168 105
-    C172 130, 188 145, 190 165
-    C192 180, 183 200, 168 210
-    C153 220, 138 215, 133 200
-    C128 185, 138 168, 155 163
-    C172 158, 180 148, 178 130
-    C174 108, 155 90, 158 62
-    C161 38, 178 18, 200 25Z
-  " fill="url(#gold)" opacity="0.85"/>
-  <!-- Base curl -->
-  <path d="
-    M133 200
-    C125 222, 135 248, 160 255
-    C185 262, 215 248, 220 225
-    C225 205, 210 190, 195 188
-    C180 186, 168 195, 168 210
-    C168 225, 180 235, 195 232
-    C210 229, 218 218, 215 205
-  " stroke="url(#gold)" stroke-width="12" fill="none" stroke-linecap="round"/>
 
-  <!-- Text -->
-  <text x="200" y="310" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-    font-size="32" letter-spacing="10" fill="#5A5A5A" font-weight="400">SHAISTANAYA</text>
-  <text x="200" y="350" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-    font-size="28" letter-spacing="14" fill="#5A5A5A" font-weight="400">CITY</text>
+  <!-- Outer flame right curve -->
+  <path d="M115 12 C138 28, 148 58, 145 85 C142 108, 128 118, 126 132 C124 146, 133 156, 143 158 C153 160, 160 152, 158 142 C156 133, 148 128, 140 126 C132 124, 126 116, 128 103 C132 85, 148 68, 144 40 C140 18, 125 6, 115 12Z" fill="url(#g1)"/>
+
+  <!-- Inner flame left curve -->
+  <path d="M115 12 C95 26, 82 52, 86 80 C89 100, 100 112, 100 128 C100 140, 93 152, 82 156 C72 160, 63 153, 64 143 C65 133, 74 127, 83 126 C92 125, 98 116, 96 103 C92 84, 76 67, 80 40 C84 18, 100 6, 115 12Z" fill="url(#g1)" opacity="0.9"/>
+
+  <!-- Base swirl -->
+  <path d="M64 143 C58 162, 68 178, 88 182 C108 186, 130 174, 134 157 C138 142, 127 132, 115 130 C103 128, 95 136, 96 146 C97 156, 107 162, 117 158 C127 154, 132 144, 128 135" stroke="url(#g1)" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- SHAISTANAYA -->
+  <text x="110" y="198" text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="13.5" letter-spacing="3.5"
+    fill="#D4A017" font-weight="400">SHAISTANAYA CITY</text>
 </svg>
