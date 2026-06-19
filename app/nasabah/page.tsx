@@ -18,14 +18,24 @@ function NasabahList() {
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState<KprStatus | ''>((searchParams.get('status') as KprStatus) || '')
   const [filterMarketing, setFilterMarketing] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
-    let q = supabase.from('kpr_nasabah').select('*').order('created_at', { ascending: false })
-    if (filterStatus) q = q.eq('status', filterStatus)
-    if (filterMarketing) q = q.ilike('nama_marketing', `%${filterMarketing}%`)
-    const { data } = await q
-    setNasabah(data || [])
+    const [q, sess] = await Promise.all([
+      supabase.from('kpr_nasabah').select('*').order('created_at', { ascending: false })
+        .then(r => r),
+      supabase.auth.getSession(),
+    ])
+    const uid = sess.data.session?.user.id
+    if (uid) {
+      const { data: role } = await supabase.from('kpr_user_roles').select('role').eq('user_id', uid).single()
+      setIsAdmin(role?.role === 'admin')
+    }
+    let data = q.data || []
+    if (filterStatus) data = data.filter(n => n.status === filterStatus)
+    if (filterMarketing) data = data.filter(n => n.nama_marketing?.toLowerCase().includes(filterMarketing.toLowerCase()))
+    setNasabah(data)
     setLoading(false)
   }, [filterStatus, filterMarketing])
 
@@ -157,18 +167,20 @@ function NasabahList() {
                     </td>
                     <td style={{ padding: '11px 14px', display: 'flex', gap: 10, alignItems: 'center' }}>
                       <Link href={`/nasabah/${n.id}`} style={{ fontSize: 12, color: '#6B7280' }}>Detail</Link>
-                      <button
-                        onClick={async () => {
-                          if (!confirm(`Hapus nasabah "${n.nama}"? Data tidak bisa dikembalikan.`)) return
-                          await supabase.from('kpr_nasabah').delete().eq('id', n.id)
-                          setNasabah(prev => prev.filter(x => x.id !== n.id))
-                        }}
-                        style={{
-                          padding: '3px 8px', borderRadius: 4, border: '1px solid #FECACA',
-                          background: '#FEF2F2', color: '#991B1B', fontSize: 11, cursor: 'pointer',
-                        }}>
-                        Hapus
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={async () => {
+                            if (!confirm(`Hapus nasabah "${n.nama}"? Data tidak bisa dikembalikan.`)) return
+                            await supabase.from('kpr_nasabah').delete().eq('id', n.id)
+                            setNasabah(prev => prev.filter(x => x.id !== n.id))
+                          }}
+                          style={{
+                            padding: '3px 8px', borderRadius: 4, border: '1px solid #FECACA',
+                            background: '#FEF2F2', color: '#991B1B', fontSize: 11, cursor: 'pointer',
+                          }}>
+                          Hapus
+                        </button>
+                      )}
                     </td>
                   </tr>
                 )
