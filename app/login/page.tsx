@@ -30,9 +30,7 @@ export default function LoginPage() {
   async function handleReset() {
     if (!email.trim()) { setError('Isi email dulu sebelum reset password.'); return }
     setResetLoading(true); setError('')
-    await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    })
+    await supabase.auth.resetPasswordForEmail(email)
     setResetSent(true); setResetLoading(false)
   }
 
