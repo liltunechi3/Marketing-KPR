@@ -149,6 +149,11 @@ function NasabahList() {
                       }}>
                         {STATUS_LABELS[n.status]}
                       </span>
+                      {n.background_notes && (
+                        <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 4, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {n.background_notes}
+                        </div>
+                      )}
                     </td>
                     <td style={{ padding: '11px 14px', display: 'flex', gap: 10, alignItems: 'center' }}>
                       <Link href={`/nasabah/${n.id}`} style={{ fontSize: 12, color: '#6B7280' }}>Detail</Link>
