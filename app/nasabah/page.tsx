@@ -150,7 +150,7 @@ function NasabahList() {
                         {STATUS_LABELS[n.status]}
                       </span>
                       {n.background_notes && (
-                        <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 4, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 4, lineHeight: 1.5 }}>
                           {n.background_notes}
                         </div>
                       )}
