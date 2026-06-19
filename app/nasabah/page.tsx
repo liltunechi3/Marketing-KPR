@@ -117,13 +117,13 @@ function NasabahList() {
       </div>
 
       {/* Table */}
-      <div style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8, overflow: 'hidden' }}>
+      <div style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8, overflowX: 'auto' }}>
         {loading ? (
           <p style={{ padding: '24px', color: '#9CA3AF', fontSize: 13 }}>Memuat...</p>
         ) : filtered.length === 0 ? (
           <p style={{ padding: '24px', color: '#9CA3AF', fontSize: 13 }}>Tidak ada data.</p>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
             <thead>
               <tr style={{ background: '#F9FAFB', borderBottom: '1px solid #E5E7EB' }}>
                 {['Nama Nasabah', 'Kontak', 'Proyek / Bank', 'Nilai KPR', 'Marketing', 'Tgl Masuk', 'Status', ''].map(h => (
