@@ -22,15 +22,15 @@ export const STATUS_LABELS: Record<KprStatus, string> = {
 }
 
 export const STATUS_COLORS: Record<KprStatus, { bg: string; text: string; border: string }> = {
-  berkas_masuk:        { bg: '#EFF6FF', text: '#1D4ED8', border: '#BFDBFE' },
-  verifikasi_internal: { bg: '#FFFBEB', text: '#B45309', border: '#FDE68A' },
-  pengajuan_bank:      { bg: '#F5F3FF', text: '#6D28D9', border: '#DDD6FE' },
-  bi_checking:         { bg: '#FFF7ED', text: '#C2410C', border: '#FED7AA' },
-  penilaian_agunan:    { bg: '#ECFEFF', text: '#0E7490', border: '#A5F3FC' },
-  approval:            { bg: '#F0FDF4', text: '#15803D', border: '#BBF7D0' },
-  akad:                { bg: '#14532D', text: '#FFFFFF', border: '#166534' },
-  ditolak:             { bg: '#FEF2F2', text: '#DC2626', border: '#FECACA' },
-  batal:               { bg: '#F9FAFB', text: '#6B7280', border: '#E5E7EB' },
+  berkas_masuk:        { bg: '#F3F4F6', text: '#374151', border: '#D1D5DB' },
+  verifikasi_internal: { bg: '#F3F4F6', text: '#374151', border: '#D1D5DB' },
+  pengajuan_bank:      { bg: '#F3F4F6', text: '#374151', border: '#D1D5DB' },
+  bi_checking:         { bg: '#F3F4F6', text: '#374151', border: '#D1D5DB' },
+  penilaian_agunan:    { bg: '#F3F4F6', text: '#374151', border: '#D1D5DB' },
+  approval:            { bg: '#111827', text: '#F9FAFB', border: '#111827' },
+  akad:                { bg: '#111827', text: '#F9FAFB', border: '#111827' },
+  ditolak:             { bg: '#FEF2F2', text: '#991B1B', border: '#FECACA' },
+  batal:               { bg: '#F9FAFB', text: '#9CA3AF', border: '#E5E7EB' },
 }
 
 export const STATUS_ORDER: KprStatus[] = [

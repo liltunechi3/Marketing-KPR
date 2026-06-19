@@ -5,11 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 interface UserRole {
-  id: string
-  user_id: string
-  role: 'admin' | 'marketing'
-  nama: string
-  created_at: string
+  id: string; user_id: string; role: 'admin' | 'marketing'; nama: string; created_at: string
 }
 
 export default function AdminPage() {
@@ -23,19 +19,9 @@ export default function AdminPage() {
     async function load() {
       const { data: session } = await supabase.auth.getSession()
       if (!session.session) { router.push('/login'); return }
-
-      const { data: myRole } = await supabase
-        .from('kpr_user_roles')
-        .select('role')
-        .eq('user_id', session.session.user.id)
-        .single()
-
-      if (myRole?.role !== 'admin') {
-        router.push('/dashboard')
-        return
-      }
+      const { data: myRole } = await supabase.from('kpr_user_roles').select('role').eq('user_id', session.session.user.id).single()
+      if (myRole?.role !== 'admin') { router.push('/dashboard'); return }
       setIsAdmin(true)
-
       const { data } = await supabase.from('kpr_user_roles').select('*').order('created_at')
       setUsers(data || [])
       setLoading(false)
@@ -50,78 +36,75 @@ export default function AdminPage() {
     setSaving(null)
   }
 
-  if (!isAdmin || loading) return (
-    <div style={{ padding: 40, color: '#9CA3AF' }}>Memuat atau memeriksa akses...</div>
-  )
+  if (!isAdmin || loading) return <div style={{ padding: 40, color: '#9CA3AF', fontSize: 13 }}>Memuat...</div>
 
   return (
-    <div style={{ padding: '32px 36px', maxWidth: 800 }}>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1E3A5F', margin: 0 }}>Manajemen User</h1>
-        <p style={{ color: '#6B7280', fontSize: 14, marginTop: 4 }}>
-          Kelola role tim marketing. Invite user baru lewat Supabase Dashboard.
-        </p>
+    <div style={{ padding: '32px 36px', maxWidth: 760 }}>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 18, fontWeight: 600, color: '#111827' }}>Manajemen User</h1>
+        <p style={{ color: '#6B7280', fontSize: 13, marginTop: 2 }}>Kelola role anggota tim.</p>
       </div>
 
-      <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 12, padding: '16px 20px', marginBottom: 24 }}>
-        <p style={{ margin: 0, fontSize: 13, color: '#15803D', fontWeight: 600 }}>Info Keamanan</p>
-        <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: 13, color: '#374151', lineHeight: 1.8 }}>
-          <li>Hanya <strong>Admin</strong> yang bisa hapus data nasabah</li>
-          <li><strong>Marketing</strong> hanya bisa input &amp; edit, tidak bisa hapus</li>
-          <li>Semua aksi tersimpan di log riwayat</li>
-          <li>Data tersimpan di Supabase (terenkripsi at-rest &amp; in-transit)</li>
+      {/* Info */}
+      <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: '14px 18px', marginBottom: 16 }}>
+        <p style={{ fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 6 }}>Hak Akses</p>
+        <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#6B7280', lineHeight: 2 }}>
+          <li><strong>Admin</strong> — full access termasuk hapus data</li>
+          <li><strong>Marketing</strong> — input & edit, tidak bisa hapus</li>
         </ul>
       </div>
 
-      <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E5E7EB', overflow: 'hidden' }}>
-        <div style={{ padding: '14px 24px', background: '#F9FAFB', borderBottom: '1px solid #E5E7EB', display: 'flex' }}>
-          <span style={{ flex: 1, fontSize: 12, fontWeight: 600, color: '#9CA3AF' }}>USER</span>
-          <span style={{ width: 160, fontSize: 12, fontWeight: 600, color: '#9CA3AF' }}>ROLE</span>
-          <span style={{ width: 120, fontSize: 12, fontWeight: 600, color: '#9CA3AF' }}>AKSI</span>
+      {/* Table */}
+      <div style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8, overflow: 'hidden', marginBottom: 14 }}>
+        <div style={{ display: 'flex', padding: '10px 20px', background: '#F9FAFB', borderBottom: '1px solid #E5E7EB' }}>
+          <span style={{ flex: 1, fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em' }}>User</span>
+          <span style={{ width: 120, fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Role</span>
+          <span style={{ width: 100, fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Aksi</span>
         </div>
 
         {users.length === 0 ? (
-          <p style={{ padding: 32, color: '#9CA3AF', textAlign: 'center', fontSize: 14 }}>
+          <p style={{ padding: '20px', color: '#9CA3AF', fontSize: 13 }}>
             Belum ada user. Invite via Supabase Dashboard → Authentication → Users.
           </p>
         ) : users.map(u => (
-          <div key={u.id} style={{ display: 'flex', alignItems: 'center', padding: '14px 24px', borderBottom: '1px solid #F9FAFB' }}>
+          <div key={u.id} style={{ display: 'flex', alignItems: 'center', padding: '12px 20px', borderBottom: '1px solid #F9FAFB' }}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#1E3A5F' }}>{u.nama}</div>
-              <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>{u.user_id}</div>
-            </div>
-            <div style={{ width: 160 }}>
-              <span style={{
-                padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-                background: u.role === 'admin' ? '#EFF6FF' : '#F0FDF4',
-                color: u.role === 'admin' ? '#1D4ED8' : '#15803D',
-                border: `1px solid ${u.role === 'admin' ? '#BFDBFE' : '#BBF7D0'}`,
-              }}>{u.role === 'admin' ? 'Admin' : 'Marketing'}</span>
+              <div style={{ fontSize: 13, fontWeight: 500, color: '#111827' }}>{u.nama || 'Tanpa nama'}</div>
+              <div style={{ fontSize: 11, color: '#D1D5DB', marginTop: 2, fontFamily: 'monospace' }}>{u.user_id}</div>
             </div>
             <div style={{ width: 120 }}>
+              <span style={{
+                padding: '3px 10px', borderRadius: 4, fontSize: 11, fontWeight: 500,
+                background: u.role === 'admin' ? '#111827' : '#F3F4F6',
+                color: u.role === 'admin' ? '#F9FAFB' : '#374151',
+                border: `1px solid ${u.role === 'admin' ? '#111827' : '#E5E7EB'}`,
+              }}>
+                {u.role === 'admin' ? 'Admin' : 'Marketing'}
+              </span>
+            </div>
+            <div style={{ width: 100 }}>
               <button
                 onClick={() => handleChangeRole(u.user_id, u.role === 'admin' ? 'marketing' : 'admin')}
                 disabled={saving === u.user_id}
                 style={{
-                  padding: '5px 12px', borderRadius: 6, border: '1.5px solid #D1D5DB',
-                  background: 'white', fontSize: 12, cursor: 'pointer', color: '#374151',
+                  padding: '5px 10px', borderRadius: 5, border: '1px solid #E5E7EB',
+                  background: '#FFFFFF', fontSize: 11, cursor: 'pointer', color: '#374151',
                   opacity: saving === u.user_id ? 0.5 : 1,
                 }}>
-                {saving === u.user_id ? '...' : u.role === 'admin' ? '→ Marketing' : '→ Admin'}
+                {saving === u.user_id ? '...' : u.role === 'admin' ? 'Jadikan Marketing' : 'Jadikan Admin'}
               </button>
             </div>
           </div>
         ))}
       </div>
 
-      <div style={{ marginTop: 20, background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 10, padding: '14px 18px' }}>
-        <p style={{ margin: 0, fontSize: 13, color: '#92400E' }}>
-          <strong>Cara invite user baru:</strong> Buka{' '}
+      <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: '12px 16px' }}>
+        <p style={{ fontSize: 12, color: '#6B7280' }}>
+          Invite user baru lewat{' '}
           <a href="https://supabase.com/dashboard/project/xiwpbulblpovkekmgbnr/auth/users"
-            target="_blank" rel="noreferrer" style={{ color: '#1E40AF' }}>
+            target="_blank" rel="noreferrer" style={{ color: '#111827', textDecoration: 'underline' }}>
             Supabase Dashboard → Authentication → Users → Invite user
           </a>
-          {' '}→ masukkan email tim marketing → mereka akan dapat email undangan.
         </p>
       </div>
     </div>
