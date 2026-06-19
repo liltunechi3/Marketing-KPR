@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 
 export default function LoginPage() {
@@ -32,13 +33,7 @@ export default function LoginPage() {
       <div style={{ width: '100%', maxWidth: 380 }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{
-            width: 40, height: 40, background: '#111827', borderRadius: 8,
-            margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <div style={{ width: 16, height: 16, background: '#F9FAFB', borderRadius: 2 }} />
-          </div>
-          <h1 style={{ fontSize: 20, fontWeight: 600, color: '#111827' }}>KPR Marketing</h1>
+          <Image src="/Logo SHAISTANAYA-01.png" alt="Shaistanaya City" width={160} height={130} style={{ objectFit: 'contain', margin: '0 auto 8px' }} priority />
           <p style={{ color: '#6B7280', fontSize: 13, marginTop: 4 }}>Masuk ke sistem CRM</p>
         </div>
 
