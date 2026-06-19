@@ -150,8 +150,20 @@ function NasabahList() {
                         {STATUS_LABELS[n.status]}
                       </span>
                     </td>
-                    <td style={{ padding: '11px 14px' }}>
+                    <td style={{ padding: '11px 14px', display: 'flex', gap: 10, alignItems: 'center' }}>
                       <Link href={`/nasabah/${n.id}`} style={{ fontSize: 12, color: '#6B7280' }}>Detail</Link>
+                      <button
+                        onClick={async () => {
+                          if (!confirm(`Hapus nasabah "${n.nama}"? Data tidak bisa dikembalikan.`)) return
+                          await supabase.from('kpr_nasabah').delete().eq('id', n.id)
+                          setNasabah(prev => prev.filter(x => x.id !== n.id))
+                        }}
+                        style={{
+                          padding: '3px 8px', borderRadius: 4, border: '1px solid #FECACA',
+                          background: '#FEF2F2', color: '#991B1B', fontSize: 11, cursor: 'pointer',
+                        }}>
+                        Hapus
+                      </button>
                     </td>
                   </tr>
                 )
