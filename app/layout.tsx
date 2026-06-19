@@ -3,6 +3,7 @@ import './globals.css'
 import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 
 const NAV = [
@@ -65,11 +66,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           borderRight: '1px solid #1F2937',
         }}>
           {/* Logo */}
-          <div style={{ padding: '24px 20px 20px', borderBottom: '1px solid #1F2937' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#F9FAFB', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-              KPR Marketing
-            </div>
-            <div style={{ fontSize: 11, color: '#6B7280', marginTop: 2 }}>CRM System</div>
+          <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid #1F2937', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Image src="/logo.svg" alt="Shaistanaya City" width={140} height={110} style={{ objectFit: 'contain' }} priority />
+            <div style={{ fontSize: 10, color: '#6B7280', marginTop: 6, letterSpacing: '0.05em', textTransform: 'uppercase' }}>CRM System</div>
           </div>
 
           {/* Nav */}
