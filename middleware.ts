@@ -1,8 +1,5 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-
-const PUBLIC_PATHS = ['/login']
 
 // Simple in-process rate limiter: max 60 requests per minute per IP
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
@@ -19,7 +16,7 @@ function isRateLimited(ip: string): boolean {
   return false
 }
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Skip static assets
@@ -31,20 +28,6 @@ export async function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
   if (isRateLimited(ip)) {
     return new NextResponse('Too Many Requests', { status: 429 })
-  }
-
-  // Public routes
-  if (PUBLIC_PATHS.some(p => pathname.startsWith(p))) {
-    return NextResponse.next()
-  }
-
-  // Check session cookie locally — no network call needed
-  const hasSession = request.cookies.getAll().some(c =>
-    c.name.startsWith('sb-') && c.name.endsWith('-auth-token')
-  )
-
-  if (!hasSession) {
-    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   const response = NextResponse.next()
