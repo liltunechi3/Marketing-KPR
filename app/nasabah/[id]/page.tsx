@@ -40,6 +40,9 @@ export default function NasabahDetailPage() {
   const [statusNote, setStatusNote] = useState('')
   const [changingStatus, setChangingStatus] = useState(false)
   const [userEmail, setUserEmail] = useState('')
+  const [editingDokId, setEditingDokId] = useState<string | null>(null)
+  const [dokNotes, setDokNotes] = useState('')
+  const [pendingDokStatus, setPendingDokStatus] = useState<'belum' | 'sudah' | 'tidak_perlu' | null>(null)
 
   const fetchAll = useCallback(async () => {
     const [n, d, no, l, sess] = await Promise.all([
@@ -66,10 +69,28 @@ export default function NasabahDetailPage() {
     setNotes(data || [])
   }
 
-  async function handleDokumenToggle(dok: KprDokumen) {
+  function handleDokumenClickStatus(dok: KprDokumen) {
     const next = dok.status === 'belum' ? 'sudah' : dok.status === 'sudah' ? 'tidak_perlu' : 'belum'
-    await supabase.from('kpr_dokumen').update({ status: next, updated_at: new Date().toISOString() }).eq('id', dok.id)
-    setDokumen(d => d.map(x => x.id === dok.id ? { ...x, status: next } : x))
+    setEditingDokId(dok.id)
+    setPendingDokStatus(next)
+    setDokNotes('')
+  }
+
+  async function handleDokumenSaveStatus() {
+    if (!editingDokId || !pendingDokStatus || !dokNotes.trim()) return
+    await supabase.from('kpr_dokumen').update({
+      status: pendingDokStatus,
+      keterangan: dokNotes.trim(),
+      updated_at: new Date().toISOString(),
+    }).eq('id', editingDokId)
+    setDokumen(d => d.map(x => x.id === editingDokId ? { ...x, status: pendingDokStatus, keterangan: dokNotes.trim() } : x))
+    setEditingDokId(null); setPendingDokStatus(null); setDokNotes('')
+  }
+
+  async function handleDokumenDelete(dokId: string) {
+    if (!confirm('Hapus berkas ini?')) return
+    await supabase.from('kpr_dokumen').delete().eq('id', dokId)
+    setDokumen(d => d.filter(x => x.id !== dokId))
   }
 
   async function handleSaveEdit() {
@@ -321,26 +342,69 @@ export default function NasabahDetailPage() {
             <p style={{ padding: 20, color: '#9CA3AF', fontSize: 13 }}>Belum ada dokumen.</p>
           )}
           {dokumen.map(dok => (
-            <div key={dok.id} style={{ display: 'flex', alignItems: 'center', padding: '10px 20px', borderBottom: '1px solid #F9FAFB', gap: 10 }}>
-              <button onClick={() => handleDokumenToggle(dok)} style={{
-                width: 22, height: 22, borderRadius: 4, border: '1px solid #D1D5DB',
-                cursor: 'pointer', flexShrink: 0, fontSize: 12,
-                background: dok.status === 'sudah' ? '#111827' : dok.status === 'tidak_perlu' ? '#F3F4F6' : '#FFFFFF',
-                color: dok.status === 'sudah' ? '#F9FAFB' : '#9CA3AF',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                {dok.status === 'sudah' ? '✓' : dok.status === 'tidak_perlu' ? '−' : ''}
-              </button>
-              <span style={{
-                flex: 1, fontSize: 13,
-                color: dok.status === 'sudah' ? '#111827' : dok.status === 'tidak_perlu' ? '#D1D5DB' : '#374151',
-                textDecoration: dok.status === 'tidak_perlu' ? 'line-through' : 'none',
-              }}>
-                {dok.nama_dokumen}
-              </span>
-              <span style={{ fontSize: 11, color: '#D1D5DB' }}>
-                {dok.status === 'belum' ? 'klik untuk update' : ''}
-              </span>
+            <div key={dok.id} style={{ borderBottom: '1px solid #F9FAFB' }}>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '10px 20px', gap: 10 }}>
+                <button onClick={() => handleDokumenClickStatus(dok)} style={{
+                  width: 22, height: 22, borderRadius: 4, border: '1px solid #D1D5DB',
+                  cursor: 'pointer', flexShrink: 0, fontSize: 12,
+                  background: dok.status === 'sudah' ? '#111827' : dok.status === 'tidak_perlu' ? '#F3F4F6' : '#FFFFFF',
+                  color: dok.status === 'sudah' ? '#F9FAFB' : '#9CA3AF',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {dok.status === 'sudah' ? '✓' : dok.status === 'tidak_perlu' ? '−' : ''}
+                </button>
+                <div style={{ flex: 1 }}>
+                  <span style={{
+                    fontSize: 13,
+                    color: dok.status === 'sudah' ? '#111827' : dok.status === 'tidak_perlu' ? '#D1D5DB' : '#374151',
+                    textDecoration: dok.status === 'tidak_perlu' ? 'line-through' : 'none',
+                  }}>
+                    {dok.nama_dokumen}
+                  </span>
+                  {dok.keterangan && (
+                    <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>{dok.keterangan}</div>
+                  )}
+                </div>
+                <button
+                  onClick={() => handleDokumenDelete(dok.id)}
+                  style={{
+                    padding: '3px 10px', borderRadius: 4, border: '1px solid #FECACA',
+                    background: '#FEF2F2', color: '#991B1B', fontSize: 11, cursor: 'pointer',
+                  }}>
+                  Hapus
+                </button>
+              </div>
+
+              {editingDokId === dok.id && (
+                <div style={{ padding: '0 20px 12px 52px', display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <div style={{ fontSize: 11, color: '#6B7280', whiteSpace: 'nowrap' }}>
+                    Ubah ke: <strong>{pendingDokStatus === 'sudah' ? 'Sudah' : pendingDokStatus === 'tidak_perlu' ? 'Tdk Perlu' : 'Belum'}</strong>
+                  </div>
+                  <input
+                    autoFocus
+                    value={dokNotes}
+                    onChange={e => setDokNotes(e.target.value)}
+                    placeholder="Catatan wajib diisi..."
+                    style={{ flex: 1, padding: '6px 10px', borderRadius: 5, border: '1px solid #E5E7EB', fontSize: 12, outline: 'none' }}
+                    onKeyDown={e => { if (e.key === 'Enter') handleDokumenSaveStatus() }}
+                  />
+                  <button
+                    onClick={handleDokumenSaveStatus}
+                    disabled={!dokNotes.trim()}
+                    style={{
+                      padding: '6px 12px', borderRadius: 5, border: 'none', fontSize: 12, fontWeight: 500, cursor: 'pointer',
+                      background: dokNotes.trim() ? '#111827' : '#E5E7EB',
+                      color: dokNotes.trim() ? '#F9FAFB' : '#9CA3AF',
+                    }}>
+                    Simpan
+                  </button>
+                  <button
+                    onClick={() => { setEditingDokId(null); setPendingDokStatus(null); setDokNotes('') }}
+                    style={{ padding: '6px 10px', borderRadius: 5, border: '1px solid #E5E7EB', background: '#FFFFFF', fontSize: 12, cursor: 'pointer', color: '#6B7280' }}>
+                    Batal
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
