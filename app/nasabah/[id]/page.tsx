@@ -452,38 +452,89 @@ export default function NasabahDetailPage() {
       {/* TAB: Riwayat */}
       {tab === 'Riwayat' && (
         <div>
+          {/* Pipeline progress summary */}
+          <div style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8, padding: '16px 20px', marginBottom: 16 }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 14 }}>Ringkasan Perjalanan Pipeline</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {STATUS_ORDER.map((s, i) => {
+                const reached = [...logs].reverse().find(l => l.status_baru === s)
+                const isCurrent = nasabah.status === s
+                const c = STATUS_COLORS[s]
+                return (
+                  <div key={s} style={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
+                    {/* Line + dot */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 32, flexShrink: 0 }}>
+                      <div style={{
+                        width: 12, height: 12, borderRadius: '50%', flexShrink: 0, marginTop: 10,
+                        background: reached ? (isCurrent ? '#111827' : '#6B7280') : '#E5E7EB',
+                        border: isCurrent ? '2px solid #111827' : '2px solid transparent',
+                        boxSizing: 'border-box',
+                      }} />
+                      {i < STATUS_ORDER.length - 1 && (
+                        <div style={{ width: 2, flex: 1, background: reached ? '#D1D5DB' : '#F3F4F6', minHeight: 8 }} />
+                      )}
+                    </div>
+                    {/* Content */}
+                    <div style={{ flex: 1, paddingBottom: i < STATUS_ORDER.length - 1 ? 8 : 0, paddingTop: 6 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{
+                          fontSize: 13, fontWeight: isCurrent ? 600 : 400,
+                          color: reached ? (isCurrent ? '#111827' : '#374151') : '#D1D5DB',
+                        }}>
+                          {STATUS_LABELS[s]}
+                        </span>
+                        {isCurrent && (
+                          <span style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}`, padding: '1px 7px', borderRadius: 3, fontSize: 10, fontWeight: 600 }}>
+                            SEKARANG
+                          </span>
+                        )}
+                        {reached && (
+                          <span style={{ fontSize: 11, color: '#9CA3AF', marginLeft: 'auto' }}>
+                            {new Date(reached.created_at).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Detailed log chronological */}
+          <p style={{ fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>Log Perubahan</p>
           {logs.length === 0 ? (
             <p style={{ color: '#9CA3AF', fontSize: 13 }}>Belum ada riwayat.</p>
-          ) : logs.map((log, i) => {
+          ) : [...logs].reverse().map((log, i, arr) => {
             const c = STATUS_COLORS[log.status_baru]
             return (
-              <div key={log.id} style={{ display: 'flex', gap: 14, marginBottom: 8 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0, paddingTop: 4 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#D1D5DB', flexShrink: 0 }} />
-                  {i < logs.length - 1 && <div style={{ flex: 1, width: 1, background: '#E5E7EB', marginTop: 4 }} />}
+              <div key={log.id} style={{ display: 'flex', gap: 14, marginBottom: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0, paddingTop: 6 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: i === arr.length - 1 ? '#111827' : '#D1D5DB', flexShrink: 0 }} />
+                  {i < arr.length - 1 && <div style={{ flex: 1, width: 1, background: '#E5E7EB', marginTop: 2, minHeight: 16 }} />}
                 </div>
-                <div style={{ flex: 1, background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8, padding: '12px 16px', marginBottom: 4 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: log.catatan ? 6 : 0 }}>
-                    <div style={{ display: 'flex', gap: 6, alignItems: 'center', fontSize: 12 }}>
+                <div style={{ flex: 1, background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 8, padding: '10px 14px', marginBottom: 6 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: log.catatan ? 5 : 0 }}>
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                       {log.status_lama && (
                         <>
-                          <span style={{ color: '#9CA3AF' }}>{STATUS_LABELS[log.status_lama]}</span>
-                          <span style={{ color: '#D1D5DB' }}>→</span>
+                          <span style={{ color: '#9CA3AF', fontSize: 12 }}>{STATUS_LABELS[log.status_lama]}</span>
+                          <span style={{ color: '#D1D5DB', fontSize: 12 }}>→</span>
                         </>
                       )}
                       <span style={{
                         background: c.bg, color: c.text, border: `1px solid ${c.border}`,
-                        padding: '2px 8px', borderRadius: 4, fontWeight: 500, fontSize: 11,
+                        padding: '2px 8px', borderRadius: 4, fontWeight: 600, fontSize: 11,
                       }}>
                         {STATUS_LABELS[log.status_baru]}
                       </span>
                     </div>
-                    <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                    <span style={{ fontSize: 11, color: '#6B7280', fontWeight: 500 }}>
                       {new Date(log.created_at).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   {log.catatan && <p style={{ margin: 0, fontSize: 12, color: '#374151' }}>{log.catatan}</p>}
-                  {log.nama_user && <p style={{ margin: '3px 0 0', fontSize: 11, color: '#9CA3AF' }}>oleh {log.nama_user}</p>}
+                  {log.nama_user && <p style={{ margin: '2px 0 0', fontSize: 11, color: '#9CA3AF' }}>oleh {log.nama_user}</p>}
                 </div>
               </div>
             )
