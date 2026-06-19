@@ -38,28 +38,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const response = NextResponse.next()
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll: () => request.cookies.getAll(),
-        setAll: (cookiesToSet) => {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options)
-          })
-        },
-      },
-    }
+  // Check session cookie locally — no network call needed
+  const hasSession = request.cookies.getAll().some(c =>
+    c.name.startsWith('sb-') && c.name.endsWith('-auth-token')
   )
 
-  const { data: { session } } = await supabase.auth.getSession()
-
-  if (!session) {
+  if (!hasSession) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
+
+  const response = NextResponse.next()
 
   // Security headers
   response.headers.set('X-Frame-Options', 'DENY')
