@@ -67,7 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }}>
           {/* Logo */}
           <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid #1F2937', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Image src="/logo.svg" alt="Shaistanaya City" width={140} height={110} style={{ objectFit: 'contain' }} priority />
+            <Image src="/Logo SHAISTANAYA-01.png" alt="Shaistanaya City" width={140} height={110} style={{ objectFit: 'contain' }} priority />
             <div style={{ fontSize: 10, color: '#6B7280', marginTop: 6, letterSpacing: '0.05em', textTransform: 'uppercase' }}>CRM System</div>
           </div>
 
