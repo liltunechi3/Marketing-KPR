@@ -70,6 +70,20 @@ export interface KprNasabah {
   tanggal_ditolak?: string
   alasan_ditolak?: string
   background_notes?: string
+  slik_notes?: string
+  catatan_umum?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface KprBankProgress {
+  id: string
+  nasabah_id: string
+  nama_bank: string
+  nama_pic?: string
+  timeline?: string
+  hasil?: string
+  urutan: number
   created_at: string
   updated_at: string
 }
